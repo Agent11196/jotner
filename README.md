@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a small lightweight magnifying/zooming application for linux written in the 
+This is a small lightweight magnifying/zooming application for [Linux](https://en.wikipedia.org/wiki/Linux) written in the 
 [C programming language](https://en.wikipedia.org/wiki/C_(programming_language)).
 This is HEAVILY inspired by [boomer](https://github.com/tsoding/boomer), but is made to be faster, smaller and has no issues with WM animations 
 
@@ -17,7 +17,27 @@ Named after [Jötnar (Frost Giants)](https://en.wikipedia.org/wiki/J%C3%B6tunn) 
 
 ## Installation
 
-### Build system Needed:
+## Download Release
+
+Use `wget` to download or download from the release tab
+
+```bash
+wget https://github.com/Agent11196/jotner/releases/download/v1.0/jotner-x86_64-Linux-v1.0.tar.gz
+```
+
+Use `tar` to extract
+```bash
+tar -xzf jotner-x86_64-Linux-v1.0.tar.gz
+```
+
+Run
+```bash
+./jotner
+```
+
+## Or Build From Source
+
+### Build System Needed:
 - make
 
 ### 1. Clone the repository
