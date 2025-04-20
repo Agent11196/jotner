@@ -179,7 +179,6 @@ static Error init_app() {
                                      0);
     XSetWMProtocols(app.dpy, app.wind, &app.close, 1);
     XMapWindow(app.dpy, app.wind);
-    XSetInputFocus(app.dpy, app.wind, RevertToPointerRoot, CurrentTime);
 
 #define EXT_FUNC(type, name) name = (type)glXGetProcAddress((unsigned char*)#name)
     PFNGLXCREATECONTEXTATTRIBSARBPROC
@@ -460,6 +459,7 @@ int main(int32_t argc, char *argv[]) {
 
     uint8_t should_close = 0;
     while (!should_close) {
+        XSetInputFocus(app.dpy, app.wind, RevertToPointerRoot, CurrentTime);
         update(&should_close);
         TRY(draw());
         usleep(config.refresh_rate);
