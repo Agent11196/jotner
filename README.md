@@ -19,15 +19,11 @@ Named after [Jötnar (Frost Giants)](https://en.wikipedia.org/wiki/J%C3%B6tunn) 
 
 ## Download Release
 
-Use `wget` to download or download from the release tab
+Download from the release tab
 
+Use `tar` to extract, replace \[VERSION] with the version that you downloaded
 ```bash
-wget https://github.com/Agent11196/jotner/releases/download/v1.0/jotner-x86_64-Linux-v1.0.tar.gz
-```
-
-Use `tar` to extract
-```bash
-tar -xzf jotner-x86_64-Linux-v1.0.tar.gz
+tar -xzf jotner-x86_64-Linux-v[VERSION].tar.gz
 ```
 
 Run
