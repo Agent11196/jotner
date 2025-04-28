@@ -9,10 +9,11 @@
 #include <string.h>
 
 // METADATA
-#define VERSION "1.0"
+#define VERSION "1.2"
 #define MIN_ZOOM 0.001
 #define TERM_RED "\033[31m"
 #define TERM_DEF "\033[0m"
+#define LOCK_FILE ".jotner"
 
 // OpenGL Function Decleration
 #define EXT_FUNC(type, name) static type name = 0
@@ -35,6 +36,7 @@ typedef enum {
     SHADER_ERR,
     X_ERR,
     GL_ERR,
+    LOCK_ERR,
 } Error;
 
 typedef struct {
@@ -71,6 +73,7 @@ static const char img_f_shade_src[] = {
 static App app = {0};
 static Config config;
 static Transform tf = {0};
+char *lock_file_name;
 static uint32_t screen_w, screen_h;
 static uint32_t mesh;
 
@@ -90,9 +93,8 @@ static Error stoi(const char *text, int32_t *data) {
 
 static Error stof(const char *text, float *data) {
     *data = atof(text);
-    if (!*data) {
+    if (!*data)
         return ARG_ERR;
-    }
 
     return OK;
 }
@@ -217,6 +219,22 @@ static Error init_app() {
     return OK;
 }
 
+static Error create_lock() {
+    const char *home = getenv("HOME");
+    lock_file_name = malloc(strlen(home) + strlen(LOCK_FILE));
+    strcpy(lock_file_name, home);
+    strcat(lock_file_name, LOCK_FILE);
+
+    if (fopen(lock_file_name, "r+"))
+        THROW(LOCK_ERR, "Lock file already exists, remove \"%s\"", lock_file_name);
+    FILE *lock_file = fopen(lock_file_name, "w");
+    if (!lock_file)
+        THROW(LOCK_ERR, "Cannot create lock file");
+    fclose(lock_file);
+
+    return OK;
+}
+
 static void init_config() {
     config = (Config) {
         .refresh_rate = 1e6/240,
@@ -226,6 +244,7 @@ static void init_config() {
 } 
 
 static Error terminate() {
+    remove(lock_file_name);
     if (app.ctx) {
         GLTRY(glBindVertexArray(0));
         GLTRY(glDeleteVertexArrays(1, &mesh));
@@ -390,7 +409,7 @@ static void update(uint8_t *should_close) {
     XNextEvent(app.dpy, &event);
 
     if ((Atom)event.xclient.data.l[0] == app.close ||
-            (event.type == KeyPress &&
+            (event.type == KeyRelease &&
              event.xkey.keycode == XKeysymToKeycode(app.dpy, XK_Escape))) {
         *should_close = 1;
     }
@@ -445,13 +464,14 @@ int main(int32_t argc, char *argv[]) {
                 return 0;
             }
             else {
-                ERR("Invalid argument \"%s\"a\n", argv[i]);
+                ERR("Invalid argument \"%s\"\n", argv[i]);
                 arg_help();
                 return ARG_ERR;
             }
         }
     }
 
+    TRY(create_lock());
     TRY(init_app());
     TRY(screenshot());
     TRY(init_mesh());

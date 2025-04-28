@@ -5,7 +5,7 @@ CFLAGS = -std=c23 -g -Wall -Wextra
 LDFLAGS = -lGL -lX11
 BUILD_DIR = build/dbg/
 
-CFLAGS_REL = -std=c23 -Wall -Wextra -Werror -O3 -DNDEBUG -fomit-frame-pointer -pipe
+CFLAGS_REL = -std=c23 -Wall -Wextra -Werror -O3 -DNDEBUG -fomit-frame-pointer -pipe -march=native
 LDFLAGS_REL = -flto -s -Wl,--gc-sections -Wl,-O1
 BUILD_DIR_REL = build/rel/
 
